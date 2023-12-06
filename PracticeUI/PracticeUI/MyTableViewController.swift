@@ -10,11 +10,9 @@ import UIKit
 class MyTableViewController: UIViewController
 {
     
-    
-
     @IBOutlet weak var myTableview: UITableView!
     
-    let friendsNames: [String] = ["Henry", "Leeo", "Jay", "Key"]
+    let friendsNames: [String] = ["Henry", "Leeo", "Jay","Key"]
     
     override func viewDidLoad() 
     {
@@ -22,15 +20,12 @@ class MyTableViewController: UIViewController
         myTableview.backgroundColor = .blue
         myTableview.delegate = self
         myTableview.dataSource = self
-        
     }
-    
 }
 
 
 extension MyTableViewController: UITableViewDelegate, UITableViewDataSource
 {
-    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
