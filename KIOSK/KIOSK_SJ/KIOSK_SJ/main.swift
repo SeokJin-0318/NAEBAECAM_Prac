@@ -34,7 +34,7 @@ class MainMenu
       //menuInfo.append(MenuList(number: 777, name: "관리자 모드", description: "관리자 모드 진입"))        // 데이터베이스 연결 해야해서 불가
     }
     
-    func inputNum() -> Int
+    func inputNum()
     {
         for i in menuInfo
         {
@@ -50,9 +50,15 @@ class MainMenu
         
         let input = readLine()
         
-        guard let bind_input = input, let choiceNumber = Int(bind_input) else { return 0 }           // 예외처리 추가
+        guard let bind_input = input, let choiceNumber = Int(bind_input) else { return print("올바른 번호를 입력하세요") }           // 예외처리 추가
         
-        return choiceNumber
+        switch choiceNumber
+        {
+        case 2: Desert().inputNum()
+        case 0: break
+        default:
+            print("올바른 번호를 입력하세요")
+        }
     }
     
 }
@@ -69,7 +75,7 @@ class Desert
     
     var desertInfo: [DesertList] = []
     
-    let goCart: Cart
+    let goCart: ShowCart
     var goCartItem: [DesertList] = []
     
     init()
@@ -80,7 +86,7 @@ class Desert
         desertInfo.append(DesertList(number: 3, name: "스모어", price: 4000, description: "누텔라와 마시멜로를 녹여 비스킷 사이에 끼워둔 악마의 디저트!!"))
         desertInfo.append(DesertList(number: 0, name: "뒤로가기", price: 0, description: "뒤로가기"))
         
-        goCart = Cart()
+        goCart = ShowCart()
     }
     
     func inputNum() -> [Any]
@@ -112,12 +118,12 @@ class Desert
         
         switch choiceNumber
         {
-        case 1: goCartItem.append(desertInfo[1])
-        case 2: goCartItem.append(desertInfo[2])
-        case 3: goCartItem.append(desertInfo[3])
-        case 0: return []
-        default:
-            print("올바른 번호를 입력하세요")
+            case 1: goCartItem = [desertInfo[1]]
+            case 2: goCartItem = [desertInfo[2]]
+            case 3: goCartItem = [desertInfo[3]]
+            case 0: return []
+            default:
+                print("올바른 번호를 입력하세요")
         }
         
         
@@ -125,7 +131,7 @@ class Desert
     }
 }
 
-class Cart
+class ShowCart
 {
     let goBack = MainMenu()
     
@@ -159,7 +165,7 @@ class Cart
 }
 
 
-class calculate
+class calculateCart
 {
     var totalCost: Int = 0
     
@@ -172,17 +178,18 @@ class calculate
 }
 
 
-
-let run: Desert = Desert()
-let totalCost = calculate()
-var abc: [Any] = []
+let mainMenu: MainMenu = MainMenu()
+let desertMenu: Desert = Desert()
+let calculate = calculateCart()
+var foodPrice: [Any] = []
 var keepOrder: Bool = true
 
-var pay: Int = 0
+var totalCost: Int = 0
 
 while keepOrder == true
 {
-    abc = run.inputNum()
-    pay += totalCost.fixTotalCost(cost: abc[1] as! Int)
-    print("장바구니에 담긴 금액 : \(pay)")
+    mainMenu = mainMenu.inputNum()
+    foodPrice = desertMenu.inputNum()
+    totalCost = calculate.fixTotalCost(cost: foodPrice[1] as! Int)      //
+    print("장바구니에 담긴 금액 : \(totalCost)")
 }
