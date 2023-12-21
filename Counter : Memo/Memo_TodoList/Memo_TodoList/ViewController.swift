@@ -10,16 +10,11 @@ import UIKit
 class ViewController: UIViewController 
 {
     
-    private struct Todo
-    {
-        var isDone: Bool
-        var work: String
-    }
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
-        
+        view.backgroundColor = .yellow
     }
 
 
