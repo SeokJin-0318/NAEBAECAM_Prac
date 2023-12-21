@@ -14,14 +14,14 @@ class ViewController: UIViewController
     private var count: Int = 0
     
     // 증가 버튼이 눌렸을때
-    @IBAction func touchIncreaseButton(_ sender: Any)
+    @IBAction func touchIncreaseButton(_ sender: UIButton)
     {
         self.count += 1
         self.refreshLabel()
     }
     
     // 감소 버튼이 눌렸을때
-    @IBAction func touchDecreaseButton(_ sender: Any)
+    @IBAction func touchDecreaseButton(_ sender: UIButton)
     {
         self.count -= 1
         self.refreshLabel()
@@ -39,7 +39,6 @@ class ViewController: UIViewController
         super.viewDidLoad()
         //self.refreshLabel()
     }
-
-
+    
 }
 
