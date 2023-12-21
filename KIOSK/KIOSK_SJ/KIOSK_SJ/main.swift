@@ -178,7 +178,7 @@ class calculateCart
 }
 
 
-let mainMenu: MainMenu = MainMenu()
+var mainMenu: MainMenu = MainMenu()
 let desertMenu: Desert = Desert()
 let calculate = calculateCart()
 var foodPrice: [Any] = []
@@ -188,7 +188,6 @@ var totalCost: Int = 0
 
 while keepOrder == true
 {
-    mainMenu = mainMenu.inputNum()
     foodPrice = desertMenu.inputNum()
     totalCost = calculate.fixTotalCost(cost: foodPrice[1] as! Int)      //
     print("장바구니에 담긴 금액 : \(totalCost)")
