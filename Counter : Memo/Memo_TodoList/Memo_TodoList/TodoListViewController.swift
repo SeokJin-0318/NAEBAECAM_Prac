@@ -11,84 +11,80 @@ class TodoListViewController: UIViewController
 {
     @IBOutlet weak var todoListTable: UITableView!
     
-    
-    private struct Todo
-    {
-        var index: Int
-        var isDone: Bool
-        var work: String
-    }
-    
-    private var list: [Todo] = [
+    var todoList: [Todo] = 
+    [
     Todo(index: 0, isDone: false, work: "할 일 1"),
     Todo(index: 1, isDone: true, work: "할 일 2"),
-    Todo(index: 2, isDone: false, work: "할 일 3")
+    Todo(index: 2, isDone: false, work: "할 일 3"),
+    Todo(index: 3, isDone: false, work: "할 일 4")
     ]
     
-    @IBAction func addAlert(_ sender: Any)
-    {
-        let alert = UIAlertController(title: "알림", message: "할 일을 추가하시겠습니까?", preferredStyle: .actionSheet)
-        let confirm = UIAlertAction(title: "확인", style: .default, handler: nil)
-        
-        // 확인을 눌렀을 경우
-        alert.addTextField{ UITextField in UITextField.placeholder = " 할 일을 입력하세요" }
-        
-        let addTodo = UIAlertAction(title: "할 일 추가", style: .default, handler: nil)
-        
-        // 텍스트 입력 받은 후 리스트에 추가
-        if let newWork = alert.textFields?.first?.text, !newWork.isEmpty
-        {
-            let newTodo = Todo(index: self.list.count, isDone: false, work: newWork)
-            self.list.append(newTodo)
-            
-            self.todoListTable.reloadData()
-        }
-        
-        let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
-
-        alert.addAction(addTodo)
-        alert.addAction(cancel)
-
-        self.present(alert, animated: true, completion: nil)
-        
-        
-        let close = UIAlertAction(title: "닫기", style: .destructive, handler: nil)
-        alert.addAction(confirm)
-        alert.addAction(close)
-        present(alert, animated: true, completion: nil)
-    }
-    
-   override func viewDidLoad()
+    override func viewDidLoad()
     {
         super.viewDidLoad()
-        todoListTable.delegate = self
-        todoListTable.dataSource = self
-        todoListTable.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) 
+    {
+        super.viewWillAppear(animated)
+        self.todoListTable?.reloadData()
     }
     
     
+    @IBAction func addAlert(_ sender: Any)
+        {
+            let alertController = UIAlertController(title: "알림", message: nil, preferredStyle: .alert)
+            alertController.addTextField{ textField in textField.placeholder = "할 일을 입력하세요"}
+            
+            let addTodo = UIAlertAction(title: "추가", style: .default) { [weak self] _ in guard let self else{return}
+                
+                // 텍스트 입력 받은 후 리스트에 추가
+                if let newWork = alertController.textFields?.first?.text, !newWork.isEmpty
+                {
+                    let newTodo = Todo(index: (todoList.last?.index ?? -1) + 1, isDone: false, work: newWork)
+                    todoList.append(newTodo)
+                    
+                    self.todoListTable? .insertRows(at: [IndexPath(row: todoList.count - 1, section: 0)], with: .automatic)
+                }
+            }
+            
+            let cancel = UIAlertAction(title: "취소", style: .cancel, handler: nil)
+            alertController.addAction(addTodo)
+            alertController.addAction(cancel)
+            present(alertController, animated: true, completion: nil)
+        }
 }
 
 
-extension TodoListViewController: UITableViewDelegate, UITableViewDataSource
+extension TodoListViewController: UITableViewDelegate
+{
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+extension TodoListViewController: UITableViewDataSource
 {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
-        return list.count
+        return todoList.count
     }
-    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
-        let cell = todoListTable.dequeueReusableCell(withIdentifier: "FirstCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TodoTableViewCell
         
-        let todos = list[indexPath.row].work
+        cell.setTask(todoList[indexPath.row])
         
         return cell
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) 
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath)
     {
-        print("Selected: \(list[indexPath.row].work)")
-        tableView.deselectRow(at: indexPath, animated: true)
+        if editingStyle == .delete
+        {
+            todoList.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
     }
 }
